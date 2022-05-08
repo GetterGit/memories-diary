@@ -1,5 +1,7 @@
 // enabling the state track for when the password is hidden and when shown by using useState
 import React, { useState } from "react";
+// importing useNavigate to redirect the logged user to Home
+import { useNavigate } from "react-router-dom";
 import {
   Avatar,
   Button,
@@ -15,6 +17,19 @@ import Icon from "./Icon";
 import LockOutlinedIcon from "@material-ui/icons/LockOutlined";
 import useStyles from "./styles";
 import Input from "./Input";
+// useDispatch for dispatching the data on successful Google Login
+import { useDispatch } from "react-redux";
+// importing signin and signup actions
+import { signin, signup } from "../../actions/auth";
+
+// initial state for the Auth form fields
+const initialState = {
+  firstName: "",
+  lastName: "",
+  email: "",
+  password: "",
+  confirmPassword: "",
+};
 
 const Auth = () => {
   const classes = useStyles();
@@ -23,9 +38,30 @@ const Auth = () => {
   const [showPassword, setShowPassword] = useState(false);
   // enabling the state track for whether the user is on Sign Up or Sign In form and then using the state to allow the user to switch between the two forms
   const [isSignUp, setIsSignUp] = useState(false);
+  // state field for capturing the auth form inputs in the state
+  const [formData, setFormData] = useState(initialState);
+  // useDispatch for dispatching the data on successful Google Login
+  const dispatch = useDispatch();
+  // useNavigate to redirect the logged user to Home
+  const navigate = useNavigate();
 
-  const handleSubmit = () => {};
-  const handleChange = () => {};
+  // handing the manual Sing Up or Sign In
+  const handleSubmit = (e) => {
+    // preventing the default event of browser refresh upon a form submission
+    e.preventDefault();
+    // handling both Sign Up and Sign In cases
+    if (isSignUp) {
+      // passing the Sign Up data and navigate so that the user is redirected to Home after successful registration
+      dispatch(signup(formData, navigate));
+    } else {
+      dispatch(signin(formData, navigate));
+    }
+  };
+  // handling changes in formData
+  const handleChange = (e) => {
+    // spreading all properties but only changing the one we are on with the target value (meaning the current input)
+    setFormData({ ...formData, [e.target.name]: e.target.value });
+  };
   // toggling the state of the password from hidden to visible
   // need a previous state to then toggle to the opposite state
   const handleShowPassword = () =>
@@ -37,10 +73,25 @@ const Auth = () => {
     setShowPassword(false);
   };
   // functions for Google Login
-  const googleSuccess = (res) => {
-    console.log(res);
+  // when the Google Login succeeded
+  const googleSuccess = async (res) => {
+    // ?. is an optional chaining operator that is not going to throw and error if we don't have access to the res object because maybe sometimes we won't have the res object so we want to make sure we don't get an error here
+    const result = res?.profileObj;
+    const token = res?.tokenId;
+
+    // as we are working with async function, we need to use the 'try ... catch' block
+    try {
+      dispatch({ type: "AUTH", data: { result, token } });
+
+      // once dispatching the AUTH data, redirecting the user to Home
+      navigate("/");
+    } catch (error) {
+      console.log(error);
+    }
   };
-  const googleFailure = () => {
+  // when the Google Login failed
+  const googleFailure = (error) => {
+    console.log(error);
     console.log("Google Sign In was unsuccessful");
   };
 
@@ -95,6 +146,15 @@ const Auth = () => {
               />
             )}
           </Grid>
+          <Button
+            className={classes.submit}
+            type="submit"
+            fullWidth
+            variant="contained"
+            color="primary"
+          >
+            {isSignUp ? "Sign Up" : "Sign In"}
+          </Button>
           {/* Adding Google Login. Render prop defines how the button is gonna look like */}
           <GoogleLogin
             clientId="80886782680-bigosue0n0fo04d11hjlf56r0dme8p10.apps.googleusercontent.com"
@@ -115,15 +175,7 @@ const Auth = () => {
             onFailure={googleFailure}
             cookiePolicy="single_host_origin"
           />
-          <Button
-            className={classes.submit}
-            type="submit"
-            fullWidth
-            variant="contained"
-            color="primary"
-          >
-            {isSignUp ? "Sign Up" : "Sign In"}
-          </Button>
+
           {/* Below, setting up a Grid to switch between Sign Up Sign In forms */}
           <Grid container justifyContent="flex-end">
             <Grid item>

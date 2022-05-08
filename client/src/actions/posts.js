@@ -19,7 +19,7 @@ export const getPosts = () => async (dispatch) => {
     // using Redux to dispatch an action from the data from our BE
     dispatch({ type: FETCH_ALL, payload: data });
   } catch (error) {
-    console.log(error.message);
+    console.log(error);
   }
 };
 

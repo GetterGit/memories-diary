@@ -72,17 +72,33 @@ export const deletePost = async (req, res) => {
 export const likePost = async (req, res) => {
   const { id } = req.params;
 
+  // checking if the user is logged in
+  if (!req.userId) return res.json({ message: "Unathenticated" });
+
   if (!mongoose.Types.ObjectId.isValid(id))
     return res.status(404).send("No post with that id");
 
   // first, we need to find the post we are looking for
   const post = await PostMessage.findById(id);
-  // updating the post with the new like amount
-  const updatedPost = await PostMessage.findByIdAndUpdate(
-    id,
-    { likeCount: post.likeCount + 1 },
-    { new: true }
-  );
+
+  // checking if this user already liked this post
+  // below, each like is an id of a specific user: looping through all ids and comparing them to userId. If match -> then the user already liked and his action will be an unlike. Else, allow the user to like.
+  // index = 1 if already liked, else index = -1
+  const index = post.likes.findIndex((id) => id === String(req.userId));
+
+  // if not liked before, liking the post for this user. Else, disliking the post for this user.
+  if (index === -1) {
+    // likes is an Array of the users who liked a specific post
+    post.likes.push(req.userId);
+  } else {
+    // looping through the likes array and only leaving those likes which were put by other users
+    post.likes = post.likes.filter((id) => id !== String(req.userId));
+  }
+
+  // updating the post with the updated likes array by just passing the post itself as the 2nd prop since this post object now also includes the updated likes array
+  const updatedPost = await PostMessage.findByIdAndUpdate(id, post, {
+    new: true,
+  });
 
   res.json(updatedPost);
 };

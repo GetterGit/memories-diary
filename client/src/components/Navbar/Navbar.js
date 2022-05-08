@@ -1,15 +1,49 @@
-import React from "react";
+// useState from handling logged and unlogged users
+// useEffect for automatically switching between Auth and Home depending on whether the user is logged
+import React, { useState, useEffect } from "react";
 // importing the Link component so that the user would be redirected to "/" when clicking the site title
-import { Link } from "react-router-dom";
+// useNavigate for redirecting to the Auth page once logged out
+// useLocation for automatically changing the Sign In button to Log Out button when the user is redirected from "/auth" to "/" after successful login
+import { Link, useNavigate, useLocation } from "react-router-dom";
 import { AppBar, Avatar, Toolbar, Button, Typography } from "@material-ui/core";
 import useStyles from "./styles";
 import memories from "../../images/memories.png";
+// useDispatch for logout
+import { useDispatch } from "react-redux";
 
 const Navbar = () => {
   const classes = useStyles();
+  // useDispatch for logout
+  const dispatch = useDispatch();
+  // useNavigate for redirecting to the Auth page once logged out
+  const navigate = useNavigate();
+  // location tracks the url path change and then we can apply some logic upon that change
+  const location = useLocation();
 
-  // mock user
-  const user = null;
+  // adding the user after successful login, first via Google Login
+  // by default, catching the actual user - need to retrieve it from localStorage
+  // storing 'profile' in localStorage in Auth.js and and auth.js reducer
+  const [user, setUser] = useState(JSON.parse(localStorage.getItem("profile")));
+
+  // useEffect for automatically switching between Auth and Home depending on whether the user is logged
+  useEffect(() => {
+    // checking for the token existence. If exists - sending it to the token variable
+    const token = user?.token;
+
+    // Checking for JsonWebToken if manual signup. No need to do it for Google Login
+
+    setUser(JSON.parse(localStorage.getItem("profile")));
+  }, [location]);
+
+  // logout function
+  const logout = () => {
+    dispatch({ type: "LOGOUT" });
+
+    // redirecting to the Home page once logged out
+    navigate("/");
+    // setting user to null so that the Sing In button would be displayed in the navbar
+    setUser(null);
+  };
 
   return (
     <AppBar className={classes.appBar} position="static" color="inherit">
@@ -42,6 +76,7 @@ const Navbar = () => {
               className={classes.logout}
               variant="contained"
               color="secondary"
+              onClick={logout}
             >
               Logout
             </Button>

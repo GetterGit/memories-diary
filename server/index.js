@@ -5,6 +5,7 @@ import cors from "cors";
 import dotenv from "dotenv";
 
 import postRoutes from "./routes/posts.js";
+import userRoutes from "./routes/users.js";
 
 // first, init the App
 const app = exress();
@@ -22,6 +23,8 @@ app.use(cors());
 
 // setting up the starting path for all routes inside posts.js
 app.use("/posts", postRoutes);
+// routes for the users
+app.use("/user", userRoutes);
 
 // using MongoDB Atlas
 const PORT = process.env.PORT;
