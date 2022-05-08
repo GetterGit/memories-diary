@@ -8,12 +8,12 @@ import VisibilityOff from "@material-ui/icons/VisibilityOff";
 // also importing all dynamic props for TextField by pasing them as pros for the Input component function
 const Input = ({
   name,
+  handleChange,
   label,
+  half,
   autoFocus,
   type,
-  handleChange,
   handleShowPassword,
-  half,
 }) => {
   return (
     <Grid item xs={12} sm={half ? 6 : 12}>

@@ -4,6 +4,9 @@ import mongoose from "mongoose";
 const postSchema = mongoose.Schema({
   title: String,
   message: String,
+  // name will be the user name
+  name: String,
+  // creator will be the user id
   creator: String,
   // [String] - array of strings
   tags: [String],

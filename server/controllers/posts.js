@@ -19,7 +19,13 @@ export const createPost = async (req, res) => {
   const post = req.body;
 
   // creating a new instance of the PostMessage model
-  const newPost = new PostMessage(post);
+  // making the BE automatically specify the creator of a specific post as the id of the user, not the name
+  // also, making sure the BE records when exactly the post was created
+  const newPost = new PostMessage({
+    ...post,
+    creator: req.userId,
+    createdAt: new Date().toISOString(),
+  });
 
   try {
     await newPost.save();

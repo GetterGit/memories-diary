@@ -7,7 +7,7 @@ const authReducer = (state = { authData: null }, action) => {
       // saving the auth data to the local storage so that the browser knew we are logged in after the page refresh
       localStorage.setItem("profile", JSON.stringify({ ...action?.data }));
 
-      return { ...state, authData: action?.data };
+      return { ...state, authData: action.data };
     case LOGOUT:
       // clearing local storage to remove the profile data
       localStorage.clear();

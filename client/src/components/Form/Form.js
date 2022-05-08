@@ -12,7 +12,6 @@ import { createPost, updatePost } from "../../actions/posts";
 // passing currentId and its set method as props for updating a post with the chosen id
 const Form = ({ currentId, setCurrentId }) => {
   const [postData, setPostData] = useState({
-    creator: "",
     title: "",
     message: "",
     tags: "",
@@ -27,6 +26,8 @@ const Form = ({ currentId, setCurrentId }) => {
   const classes = useStyles();
   // enabling action dispatching, then need to decide where we want to dispatch actions
   const dispatch = useDispatch();
+  // adding the name of the user to be recorded for a given post which is being created. Note, that the creator is gonna be this user's id
+  const user = JSON.parse(localStorage.getItem("profile"));
 
   // to populate the values of the form with the values of the post chosen to be editted
   // running the arrow function when the post value changes
@@ -41,9 +42,12 @@ const Form = ({ currentId, setCurrentId }) => {
 
     // adding IF statement to differentiate between post creation and post edition
     if (currentId) {
-      dispatch(updatePost(currentId, postData));
+      dispatch(
+        updatePost(currentId, { ...postData, name: user?.result?.name })
+      );
     } else {
-      dispatch(createPost(postData));
+      // adding the name of the user to be recorded for a given post which is being created. Note, that the creator is gonna be this user's id
+      dispatch(createPost({ ...postData, name: user?.result?.name }));
     }
 
     clear();
@@ -55,13 +59,23 @@ const Form = ({ currentId, setCurrentId }) => {
   const clear = () => {
     setCurrentId(null);
     setPostData({
-      creator: "",
       title: "",
       message: "",
       tags: "",
       selectedFile: "",
     });
   };
+
+  // if no logged in users, show a card saying that the post cannot be created unless logged in
+  if (!user?.result?.name) {
+    return (
+      <Paper className={classes.paper}>
+        <Typography variant="h6" align="center">
+          Please, sign in to create your memories or like memories
+        </Typography>
+      </Paper>
+    );
+  }
 
   return (
     // Paper is a div which has a white-ish backgroun
@@ -77,16 +91,6 @@ const Form = ({ currentId, setCurrentId }) => {
         <Typography variant="h6">
           {currentId ? "Editing" : "Creating"} a Memory
         </Typography>
-        <TextField
-          name="creator"
-          variant="outlined"
-          label="Creator"
-          fullWidth
-          value={postData.creator}
-          onChange={(e) =>
-            setPostData({ ...postData, creator: e.target.value })
-          }
-        />
         <TextField
           name="title"
           variant="outlined"

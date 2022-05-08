@@ -1,6 +1,6 @@
 // importing useState for keeping track of the current id for post editing purposes
 import React, { useState, useEffect } from "react";
-import { Container, Grow, Grid } from "@material-ui/core";
+import { Container, Grow, Grid, Paper } from "@material-ui/core";
 import Posts from "../Posts/Posts";
 import Form from "../Form/Form";
 // when Redux is set, we need to dispatch the get posts action
@@ -9,6 +9,8 @@ import { useDispatch } from "react-redux";
 // getPosts as an action to dispatch in useEffect
 import { getPosts } from "../../actions/posts";
 import useStyles from "./styles";
+// importing Pagination for navigating users to chosen posts
+import Pagination from "../Pagination";
 
 const Home = () => {
   // useState for tracking the current id for post updating
@@ -45,6 +47,9 @@ const Home = () => {
           <Grid item xs={12} sm={4}>
             {/*passing the current id to Form + setter methods for that id*/}
             <Form currentId={currentId} setCurrentId={setCurrentId} />
+            <Paper className={classes.pagination} elevation={6}>
+              <Pagination />
+            </Paper>
           </Grid>
         </Grid>
       </Container>

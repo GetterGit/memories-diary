@@ -10,6 +10,8 @@ import useStyles from "./styles";
 import memories from "../../images/memories.png";
 // useDispatch for logout
 import { useDispatch } from "react-redux";
+// for decoding the JWT token to redirect the user to the login page when the JWT expires
+import decode from "jwt-decode";
 
 const Navbar = () => {
   const classes = useStyles();
@@ -30,7 +32,14 @@ const Navbar = () => {
     // checking for the token existence. If exists - sending it to the token variable
     const token = user?.token;
 
-    // Checking for JsonWebToken if manual signup. No need to do it for Google Login
+    // Checking for JsonWebToken if manual signup. No need to do it for Google Login. If JWT expired, redirect the user to the login page
+    if (token) {
+      const decodedToken = decode(token);
+
+      // .exp if the expiry of the token
+      // by * 1000 getting a value in milliseconds
+      if (decodedToken.exp * 1000 < new Date().getTime()) logout();
+    }
 
     setUser(JSON.parse(localStorage.getItem("profile")));
   }, [location]);
@@ -40,7 +49,7 @@ const Navbar = () => {
     dispatch({ type: "LOGOUT" });
 
     // redirecting to the Home page once logged out
-    navigate("/");
+    navigate("/auth");
     // setting user to null so that the Sing In button would be displayed in the navbar
     setUser(null);
   };
@@ -60,17 +69,17 @@ const Navbar = () => {
         <img className={classes.image} src={memories} alt="icon" height="60" />
       </div>
       <Toolbar className={classes.toolbar}>
-        {user ? (
+        {user?.result ? (
           <div className={classes.profile}>
             <Avatar
               className={classes.purple}
-              alt={user.result.name}
-              src={user.result.imageUrl}
+              alt={user?.result.name}
+              src={user?.result.imageUrl}
             >
-              {user.result.name.charAt(0)}
+              {user?.result.name.charAt(0)}
             </Avatar>
             <Typography className={classes.userName} variant="h6">
-              {user.result.name}
+              {user.result?.name}
             </Typography>
             <Button
               className={classes.logout}

@@ -30,8 +30,8 @@ const auth = async (req, res, next) => {
       req.userId = decodedData?.sub;
 
       // passing the action onto the next thing (e.g. post like or post delete)
-      next();
     }
+    next();
   } catch (error) {
     console.log(error);
   }
