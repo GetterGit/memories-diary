@@ -10,13 +10,17 @@ import useStyles from "./styles";
 const Posts = ({ setCurrentId }) => {
   // using a hook to fetch the data from global Redux store
   // state.posts since in the index.js (reducers) we called a respective reducer posts
-  const posts = useSelector((state) => state.posts);
+  // refactoring posts since now we have a state as an object rather than an array of posts: posts -> {posts} to desctucture the object
+  // adding isLoading variable to fetch the isLoading value of the current state: either true or false
+  const { posts, isLoading } = useSelector((state) => state.posts);
   const classes = useStyles();
 
-  console.log(posts);
+  // returning an informative string if both no posts in DB and not loading
+  if (!posts.length && !isLoading) return "No posts";
 
   // if no posts, then show a loading spinner, else - loop over the posts
-  return !posts.length ? (
+  // updating the return with isLoading: if true, then showing the circular progress
+  return isLoading ? (
     <CircularProgress />
   ) : (
     <Grid

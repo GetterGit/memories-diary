@@ -55,13 +55,6 @@ const Home = () => {
   // adding state for tags
   const [tags, setTags] = useState([]);
 
-  // now, we need to find a way where we are actually gonna dispatch the action. Best way - insise of the useEffect
-  // [dispatch] is the dependency array: it basically tells the hook to "only trigger when the dependency array changes". In the below example, it means "run the callback every time the dispatch variable changes".
-  useEffect(() => {
-    dispatch(getPosts());
-    // adding currentId to the dependency array to enable immediate page update to show the updated post as when we update the post we reset currentId to null in the Form component
-  }, [currentId, dispatch]);
-
   // function for searching by hitting Enter
   const handleKeyPress = (e) => {
     // 13 is the keyCode of Enter
@@ -147,9 +140,13 @@ const Home = () => {
             </AppBar>
             {/*passing the current id to Form + setter methods for that id*/}
             <Form currentId={currentId} setCurrentId={setCurrentId} />
-            <Paper className={classes.pagination} elevation={6}>
-              <Pagination />
-            </Paper>
+            {/*showing pagination only if not searching by text or tags*/}
+            {!searchQuery && !tags.length && (
+              <Paper className={classes.pagination} elevation={6}>
+                {/* Removed useEffect with getPosts() because we will not be fetching posts from Home anymore. We'll rather pass our page to the Pagination component as a prop*/}
+                <Pagination page={page} />
+              </Paper>
+            )}
           </Grid>
         </Grid>
       </Container>

@@ -21,7 +21,8 @@ API.interceptors.request.use((req) => {
 });
 
 // the below is to return all posts in the DB as it will be using /posts route (see the posts.js routes for more info)
-export const fetchPosts = () => API.get("/posts");
+// passing the page to the BE so that it knew which page we are currently on
+export const fetchPosts = (page) => API.get(`/posts?page=${page}`);
 export const createPost = (newPost) => API.post("/posts", newPost);
 export const updatePost = (id, updatedPost) =>
   API.patch(`/posts/${id}`, updatedPost);

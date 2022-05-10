@@ -3,13 +3,35 @@ import mongoose from "mongoose";
 import PostMessage from "../models/postMessage.js";
 
 export const getPosts = async (req, res) => {
+  //accepting the page the user is currently on to display the posts only for this page
+  const { page } = req.query;
+
   // each callback function should have a 'try - catch' block
   try {
+    // adding the logic for Pagination to fetch only the posts for a given page
+    // LIMIT is the num of posts per page
+    const LIMIT = 4;
+    // startIndex of a post on a specific page (e.g. 1st post on the 3rd page will have index of (4+4+4-1))
+    const startIndex = (Number(page) - 1) * LIMIT;
+    // counting the total posts in the DB to display the right number of pages on the FE
+    const total = await PostMessage.countDocuments();
+
     // trying to retrieve all messages that we have
     // PostMessage.find() takes time to find smth inside of the model - hence adding await and making the whole getPosts function async
-    const postMessages = await PostMessage.find();
+    // sorting to get the newest posts first
+    // limiting the number of posts per page
+    // skipping the posts to startIndex to get the posts for a specific page we are on
+    const posts = await PostMessage.find()
+      .sort({ _id: -1 })
+      .limit(LIMIT)
+      .skip(startIndex);
 
-    res.status(200).json(postMessages);
+    // passing the posts, current page and total pages to the FE
+    res.status(200).json({
+      data: posts,
+      currentPage: Number(page),
+      numberOfPages: Math.ceil(total / LIMIT),
+    });
   } catch (error) {
     res.status(404).json({ message: error.message });
   }

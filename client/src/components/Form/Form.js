@@ -81,7 +81,7 @@ const Form = ({ currentId, setCurrentId }) => {
     // Paper is a div which has a white-ish backgroun
     // TextField values are gonna be stored in an object in the state, and then object key is going to be a specific text field (e.g. value={postData.creator})
     // with onChange we have an object in the state and we want to update just 1 of the object's properties. We use the below syntax where e is event. Using ...postData means all data is going to persist for the object apart from the specified property
-    <Paper className={classes.paper}>
+    <Paper className={classes.paper} elevation={6}>
       <form
         autoComplete="off"
         noValidate
