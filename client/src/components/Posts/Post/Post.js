@@ -29,7 +29,7 @@ const Post = ({ post, setCurrentId }) => {
   // creating the Post sub-component Likes to deal with displaying the like number and also considering the grammer of like/likes
   const Likes = () => {
     // checking if any likes
-    if (post.likes.length > 0) {
+    if (post?.likes?.length > 0) {
       // checking if the current user likes a given post
       return post.likes.find(
         (like) => like === (user?.result?.googleId || user?.result?._id)
@@ -43,7 +43,7 @@ const Post = ({ post, setCurrentId }) => {
         </>
       ) : (
         <>
-          <ThumbUpAltOutlined fontSize="smalle" />
+          <ThumbUpAltOutlined fontSize="small" />
           &nbsp;{post.likes.length} {post.likes.length === 1 ? "Like" : "Likes"}
         </>
       );
@@ -59,7 +59,7 @@ const Post = ({ post, setCurrentId }) => {
   };
 
   return (
-    <Card className={classes.card}>
+    <Card className={classes.card} raised elevation={6}>
       <CardMedia
         className={classes.media}
         image={post.selectedFile}
@@ -106,7 +106,7 @@ const Post = ({ post, setCurrentId }) => {
         <Button
           size="small"
           color="primary"
-          disabled={!user.result}
+          disabled={!user?.result}
           onClick={() => dispatch(likePost(post._id))}
         >
           <Likes />

@@ -32,5 +32,15 @@ export const likePost = (id) => API.patch(`/posts/${id}/likePost`);
 export const signIn = (formData) => API.post("/user/signin", formData);
 export const signUp = (formData) => API.post("/user/signup", formData);
 
+// routes for search by query
+// query params start from ? and then we specify a variable name
+// using 'none' if no search is provided
+export const fetchPostsBySearch = (searchQuery) =>
+  API.get(
+    `/posts/search?searchQuery=${searchQuery.search || "none"}&tags=${
+      searchQuery.tags
+    }`
+  );
+
 // then, focusing on adding Redux capabilities so that all actions towards the BE would be done using Redux
 // hence, we need to dispatch those actions - to do that we need to add some boiler plate code meaning create several files and folders for higher scalability and better structure

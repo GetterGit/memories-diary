@@ -15,6 +15,33 @@ export const getPosts = async (req, res) => {
   }
 };
 
+// controller for getting searched posts
+export const getPostsBySearch = async (req, res) => {
+  // we want to retrieve the query data from req.query
+  // req.query and req.params are different: QUERY -> /posts?page=1 -> page = 1 ; PARAMS -> /posts/123 -> id = 123
+  // using QUERY when searching for smth, using PARAMS when getting some specific resource like a post
+  const { searchQuery, tags } = req.query;
+
+  try {
+    // RegExp is used to match text with a pattern
+    // 'i' ignores text case so that Test, test, TEST are searched the same
+    const title = new RegExp(searchQuery, "i");
+
+    // writing a DB query in find()
+    // $or stands for either find the title or the tags
+    // since tags is an array, we use $in to find a tag in the given array of tags that matches the tags in our query
+    // spliting the query tags by coma sine we previously joined them to make a tags String
+    const posts = await PostMessage.find({
+      $or: [{ title }, { tags: { $in: tags.split(",") } }],
+    });
+
+    // returning the object with the posts matching the search query back to the FE
+    res.json({ data: posts });
+  } catch (error) {
+    res.status(404).json({ message: error.message });
+  }
+};
+
 export const createPost = async (req, res) => {
   const post = req.body;
 

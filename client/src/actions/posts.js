@@ -3,6 +3,7 @@ import * as api from "../api";
 // importing the action types to make the code cleaner and less prone to typos
 import {
   FETCH_ALL,
+  FETCH_BY_SEARCH,
   CREATE,
   UPDATE,
   DELETE,
@@ -18,6 +19,20 @@ export const getPosts = () => async (dispatch) => {
 
     // using Redux to dispatch an action from the data from our BE
     dispatch({ type: FETCH_ALL, payload: data });
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+// getting posts by the search terms
+// accepting searchQuery as a param and passing it to the api
+export const getPostsBySearch = (searchQuery) => async (dispatch) => {
+  try {
+    const {
+      data: { data },
+    } = await api.fetchPostsBySearch(searchQuery);
+
+    dispatch({ type: FETCH_BY_SEARCH, payload: data });
   } catch (error) {
     console.log(error);
   }

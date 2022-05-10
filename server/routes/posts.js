@@ -7,6 +7,7 @@ import {
   updatePost,
   deletePost,
   likePost,
+  getPostsBySearch,
 } from "../controllers/posts.js";
 
 import auth from "../middleware/auth.js";
@@ -22,5 +23,8 @@ router.patch("/:id", auth, updatePost);
 router.delete("/:id", auth, deletePost);
 // cannot like more than once - hence using middleware
 router.patch("/:id/likePost", auth, likePost);
+
+// creating a route for searched posts
+router.get("/search", getPostsBySearch);
 
 export default router;

@@ -1,5 +1,6 @@
 import {
   FETCH_ALL,
+  FETCH_BY_SEARCH,
   UPDATE,
   LIKE,
   DELETE,
@@ -16,6 +17,10 @@ export default (posts = [], action) => {
     // now, we should specify all our types aka what we want to be doing with the posts
     case FETCH_ALL:
       // returning all posts based on the logic setup in ../actions/posts.js
+      return action.payload;
+    // case for searching posts
+    // returning the payload since it consists of the data of posts matching the search query and sent from actions
+    case FETCH_BY_SEARCH:
       return action.payload;
     case CREATE:
       return [...posts, action.payload];
