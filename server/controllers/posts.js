@@ -37,6 +37,20 @@ export const getPosts = async (req, res) => {
   }
 };
 
+// getting post by id
+export const getPost = async (req, res) => {
+  // getting the post's id
+  const { id } = req.params;
+
+  try {
+    const post = await PostMessage.findById(id);
+
+    res.status(200).json(post);
+  } catch (error) {
+    req.status(404).json({ message: error.message });
+  }
+};
+
 // controller for getting searched posts
 export const getPostsBySearch = async (req, res) => {
   // we want to retrieve the query data from req.query

@@ -7,6 +7,8 @@ import FileBase from "react-file-base64";
 // importing useSelector now, when the currentId is set to be passed to the form for the post edition, we need to pass the current pos contents to the form as well
 import { useDispatch, useSelector } from "react-redux";
 import { createPost, updatePost } from "../../actions/posts";
+// importing useNavigate for redirecting the user to the newly created post
+import { useNavigate } from "react-router-dom";
 
 // for updating existing posts: once we click ... in the post card, we need to pass the id of this specific post to the form component
 // passing currentId and its set method as props for updating a post with the chosen id
@@ -21,13 +23,16 @@ const Form = ({ currentId, setCurrentId }) => {
   // now, when the currentId is set to be passed to the form for the post edition, we need to pass the current pos contents to the form as well
   // if currentId is not null, finding and returning the post (p) with this id
   const post = useSelector((state) =>
-    currentId ? state.posts.find((p) => p._id === currentId) : null
+    // added posts. to state.posts as we changed the state returning the object with a posts array rather than just the posts array
+    currentId ? state.posts.posts.find((p) => p._id === currentId) : null
   );
   const classes = useStyles();
   // enabling action dispatching, then need to decide where we want to dispatch actions
   const dispatch = useDispatch();
   // adding the name of the user to be recorded for a given post which is being created. Note, that the creator is gonna be this user's id
   const user = JSON.parse(localStorage.getItem("profile"));
+  // importing useNavigate for redirecting the user to the newly created post
+  const navigate = useNavigate();
 
   // to populate the values of the form with the values of the post chosen to be editted
   // running the arrow function when the post value changes
@@ -47,7 +52,7 @@ const Form = ({ currentId, setCurrentId }) => {
       );
     } else {
       // adding the name of the user to be recorded for a given post which is being created. Note, that the creator is gonna be this user's id
-      dispatch(createPost({ ...postData, name: user?.result?.name }));
+      dispatch(createPost({ ...postData, name: user?.result?.name }, navigate));
     }
 
     clear();

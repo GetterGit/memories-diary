@@ -28,6 +28,8 @@ export const updatePost = (id, updatedPost) =>
   API.patch(`/posts/${id}`, updatedPost);
 export const deletePost = (id) => API.delete(`/posts/${id}`);
 export const likePost = (id) => API.patch(`/posts/${id}/likePost`);
+// fetching post by id
+export const fetchPost = (id) => API.get(`/posts/${id}`);
 
 // routes for signin and signup
 export const signIn = (formData) => API.post("/user/signin", formData);

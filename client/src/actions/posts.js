@@ -10,6 +10,7 @@ import {
   LIKE,
   START_LOADING,
   END_LOADING,
+  FETCH_POST,
 } from "../constants/actionTypes";
 
 // making Action Creators - functions which return actions
@@ -28,6 +29,22 @@ export const getPosts = (page) => async (dispatch) => {
 
     // using Redux to dispatch an action from the data from our BE
     dispatch({ type: FETCH_ALL, payload: data });
+    // end loading
+    dispatch({ type: END_LOADING });
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+// getting post by id
+export const getPost = (id) => async (dispatch) => {
+  try {
+    // starting loading
+    dispatch({ type: START_LOADING });
+    // fetching the post by id
+    const { data } = await api.fetchPost(id);
+
+    dispatch({ type: FETCH_POST, payload: data });
     // end loading
     dispatch({ type: END_LOADING });
   } catch (error) {
@@ -54,7 +71,7 @@ export const getPostsBySearch = (searchQuery) => async (dispatch) => {
   }
 };
 
-export const createPost = (post) => async (dispatch) => {
+export const createPost = (post, navigate) => async (dispatch) => {
   try {
     // starting loading
     dispatch({ type: START_LOADING });
@@ -62,8 +79,7 @@ export const createPost = (post) => async (dispatch) => {
     const { data } = await api.createPost(post);
 
     dispatch({ type: CREATE, payload: data });
-    // end loading
-    dispatch({ type: END_LOADING });
+    navigate(`/posts/${data._id}`);
   } catch (error) {
     console.log(error);
   }

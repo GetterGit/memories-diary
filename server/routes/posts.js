@@ -8,6 +8,7 @@ import {
   deletePost,
   likePost,
   getPostsBySearch,
+  getPost,
 } from "../controllers/posts.js";
 
 import auth from "../middleware/auth.js";
@@ -26,5 +27,8 @@ router.patch("/:id/likePost", auth, likePost);
 
 // creating a route for searched posts
 router.get("/search", getPostsBySearch);
+
+// getting post by id
+router.get("/:id", getPost);
 
 export default router;

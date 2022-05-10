@@ -7,6 +7,7 @@ import {
   CREATE,
   START_LOADING,
   END_LOADING,
+  FETCH_POST,
 } from "../constants/actionTypes";
 
 // a reducer is a function that accepts a state and action
@@ -30,6 +31,9 @@ export default (state = { isLoading: true, posts: [] }, action) => {
         currentPage: action.payload.currentPage,
         numberOfPages: action.payload.numberOfPages,
       };
+    // fetching post by id
+    case FETCH_POST:
+      return { ...state, post: action.payload };
     // case for searching posts
     // returning the payload since it consists of the data of posts matching the search query and sent from actions
     case FETCH_BY_SEARCH:
