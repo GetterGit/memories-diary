@@ -171,3 +171,23 @@ export const likePost = async (req, res) => {
 
   res.json(updatedPost);
 };
+
+export const commentPost = async (req, res) => {
+  // getting the post id
+  const { id } = req.params;
+  // getting the comment's value
+  const { value } = req.body;
+
+  // fetching the post to put the comment to
+  const post = await PostMessage.findById(id);
+
+  // adding the comment to the post object created above
+  post.comments.push(value);
+
+  // updating the post with the comment in the DB
+  const updatedPost = await PostMessage.findByIdAndUpdate(id, post, {
+    new: true,
+  });
+
+  res.json(updatedPost);
+};

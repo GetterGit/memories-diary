@@ -12,6 +12,8 @@ import moment from "moment";
 import { useParams, useNavigate } from "react-router-dom";
 // getting post by id and then getting recommended posts
 import { getPost, getPostsBySearch } from "../../actions/posts";
+// implememting comments
+import CommentSection from "./CommentSection";
 
 import useStyles from "./styles";
 
@@ -79,9 +81,7 @@ const PostDetails = () => {
             {moment(post.createdAt).fromNow()}
           </Typography>
           <Divider style={{ margin: "20px 0" }} />
-          <Typography variant="body1">
-            <strong>Comments - coming soon</strong>
-          </Typography>
+          <CommentSection post={post} />
           <Divider style={{ margin: "20px 0" }} />
         </div>
         <div className={classes.imageSection}>
@@ -95,7 +95,7 @@ const PostDetails = () => {
           />
         </div>
       </div>
-      {recommendedPosts.length && (
+      {!!recommendedPosts.length && (
         <div className={classes.section}>
           <Typography gutterBottom variant="h5">
             You might also like:

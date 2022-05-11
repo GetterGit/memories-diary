@@ -1,4 +1,5 @@
-import React from "react";
+// importing useState to implement Quick Liking - showing the like to the user while this like action is still being handled by the BE
+import React, { useState } from "react";
 import useStyles from "./styles";
 // ButtonBase for clicking the post card to go to the card details
 import {
@@ -31,26 +32,47 @@ const Post = ({ post, setCurrentId }) => {
   const user = JSON.parse(localStorage.getItem("profile"));
   // enablinhg navigation to the post details
   const navigate = useNavigate();
+  // State for implementing showing the like to the user while this like action is still being handled by the BE
+  const [likes, setLikes] = useState(post?.likes);
+
+  // code cleaning, putting a frequiently user expression into a variable
+  const userId = user?.result?.googleId || user?.result?._id;
+  // adding a const for checking whether the current user like a post, boolean
+  const hasLikedPost = likes.find((like) => like === userId);
+
+  // enabling Quick Likes onClick for the like button
+  const handleLike = async () => {
+    dispatch(likePost(post._id));
+
+    // checking if the current user liked the post
+    if (hasLikedPost) {
+      setLikes(
+        // filtering out the current user's like. Because if the user already liked - next action is unlike
+        post.likes.filter((id) => id !== userId)
+      );
+    } else {
+      // else, the user wants to like the post, so adding the user's like ot the current likes
+      setLikes([...post.likes, userId]);
+    }
+  };
 
   // creating the Post sub-component Likes to deal with displaying the like number and also considering the grammer of like/likes
   const Likes = () => {
     // checking if any likes
-    if (post?.likes?.length > 0) {
+    if (likes.length > 0) {
       // checking if the current user likes a given post
-      return post.likes.find(
-        (like) => like === (user?.result?.googleId || user?.result?._id)
-      ) ? (
+      return hasLikedPost ? (
         <>
           <ThumbUpAltIcon fontSize="small" />
           &nbsp;
-          {post.likes.length > 2
-            ? `You and ${post.likes.length - 1} others`
-            : `${post.likes.length} like${post.likes.length > 1 ? "s" : ""}`}
+          {likes.length > 2
+            ? `You and ${likes.length - 1} others`
+            : `${likes.length} like${likes.length > 1 ? "s" : ""}`}
         </>
       ) : (
         <>
           <ThumbUpAltOutlined fontSize="small" />
-          &nbsp;{post.likes.length} {post.likes.length === 1 ? "Like" : "Likes"}
+          &nbsp;{likes.length} {likes.length === 1 ? "Like" : "Likes"}
         </>
       );
     }
@@ -124,7 +146,8 @@ const Post = ({ post, setCurrentId }) => {
           size="small"
           color="primary"
           disabled={!user?.result}
-          onClick={() => dispatch(likePost(post._id))}
+          // Changing () => dispatch(deletePost(post._id)) to handleLike to implement Quick Likes
+          onClick={handleLike}
         >
           <Likes />
         </Button>

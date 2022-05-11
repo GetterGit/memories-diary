@@ -45,5 +45,9 @@ export const fetchPostsBySearch = (searchQuery) =>
     }`
   );
 
+// commenting posts
+export const commentPost = (value, id) =>
+  API.post(`/posts/${id}/commentPost`, { value });
+
 // then, focusing on adding Redux capabilities so that all actions towards the BE would be done using Redux
 // hence, we need to dispatch those actions - to do that we need to add some boiler plate code meaning create several files and folders for higher scalability and better structure

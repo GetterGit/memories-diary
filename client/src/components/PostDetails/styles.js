@@ -46,6 +46,7 @@ export default makeStyles((theme) => ({
   },
   commentsInnerContainer: {
     height: "200px",
+    // overflowY makes the container scrollable
     overflowY: "auto",
     marginRight: "30px",
   },

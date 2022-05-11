@@ -9,6 +9,7 @@ import {
   likePost,
   getPostsBySearch,
   getPost,
+  commentPost,
 } from "../controllers/posts.js";
 
 import auth from "../middleware/auth.js";
@@ -30,5 +31,8 @@ router.get("/search", getPostsBySearch);
 
 // getting post by id
 router.get("/:id", getPost);
+
+// commenting a post
+router.post("/:id/commentPost", auth, commentPost);
 
 export default router;
